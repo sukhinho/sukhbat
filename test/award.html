@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sukhinho Jiu Jitsu Diet</title>
+
+  <!-- Font Awesome -->
+  <script src="https://kit.fontawesome.com/8a206a71da.js" crossorigin="anonymous"></script>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" media="screen and (max-width: 1280px)" href="css/mobile.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Courgette&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      color: #fff;
+      font-family: 'Courgette', cursive;
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    #navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: #333;
+      height: 60px;
+      z-index: 10;
+      overflow: hidden;
+    }
+
+    #navbar .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+    }
+
+    #navbar a {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 20px;
+    }
+
+    #about-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 120px;
+      bottom: 0;
+      width: 100%;
+    }
+
+    .info-left {
+      width: 50%;
+      padding-left: 40px;
+    }
+
+    .info-right {
+      width: 600px;
+      height: 600px;
+      overflow: hidden;
+    }
+
+    .swiper-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 5px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    ul li a {
+      color: #fff;
+      font-size: 20px;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <nav id="navbar">
+    <div class="container">
+      <h1 class="logo"><a href="index.html">HOME</a></h1>
+      <ul>
+        <li><a href="action.html">Photos</a></li>
+        <li><a href="award.html">DIET</a></li>
+        <li><a href="contact.html">Contact with Sukhinho</a></li>
+        <li><a href="sign.html">Sign / Sign up</a></li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<section id="about-info">
+  <div class="info-left">
+    <ul>
+      <li><a class="text-primary">Body performance with this diet:</a></li>
+      <li><a class="text-primary">6-7am: Oatmeal 50g</a></li>
+      <li><a class="text-primary">12am: 20-30g protein with 100-130g carbs</a></li>
+      <li><a class="text-primary">4pm-5pm: Dose of protein or 2 eggs</a></li>
+      <li><a class="text-primary">7pm-8pm: 100g yogurt or 40g nuts</a></li>
+    </ul>
+  </div>
+  <div class="info-right">
+    <div class="swiper-container">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide"><img src="IMG_0117.PNG" alt="Diet Image 1" /></div>
+        <div class="swiper-slide"><img src="IMG_0015.jpg" alt="Diet Image 2" /></div>
+        <div class="swiper-slide"><img src="IMG_0119.PNG" alt="Diet Image 3" /></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script>
+  new Swiper('.swiper-container', {
+    direction: 'horizontal',
+    loop: true,
+    slidesPerView: 1,
+    spaceBetween: 0,
+    autoplay: { delay: 2000, disableOnInteraction: false }
+  });
+</script>
+</body>
+</html>

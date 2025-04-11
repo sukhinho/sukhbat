@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <meta name="keywords" content="Sukhinho Jiu Jitsu, Dashboard" />
+  <script src="https://kit.fontawesome.com/8a206a71da.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" media="screen and (max-width: 768px)" href="css/mobile.css" />
+  <title>Sukhinho Jiu Jitsu Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Courgette&display=swap" rel="stylesheet" />
+  <style>
+    /* Basic styles (if needed) */
+    .form-container {
+      display: none;
+      margin: 20px;
+    }
+    .form-container.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav id="navbar">
+      <div class="container">
+        <h1 class="logo">
+          <a href="index1.html">Sukinho</a>
+        </h1>
+        <ul>
+            <li><a href="dashboard.html" class="current">Dashboard</a></li>
+          <li><a href="lesson.html">Lesson</a></li>
+          <li><a href="action1.html">In Action Photos</a></li>
+          <li><a href="award1.html">Awards</a></li>
+          <li><a href="contact1.html">Contact</a></li>
+          <li><a href="profile.html">My profile</a></li>
+          <!-- Logout link -->
+          <li><a href="#" id="logoutBtn">Logout</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section id="dashboard" class="py-3">
+      <div class="container">
+        <h2>Tavtai moril hongor min</h2>
+        <p>Ta amjilttai nevterlee minii websited. Bid tanii jiu jitsu technic medlegiig teleh bolno <3.</p>
+        <img src="come.jpg"
+        <!-- Additional dashboard content can be added here -->
+      </div>
+    </section>
+  </main>
+
+  <footer id="main-footer">
+    <p>&copy; 2024 Sukhinho Jiu Jitsu</p>
+  </footer>
+
+  <script>
+    // Logout functionality: clear the auth token and redirect to the sign-in page.
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('authToken');
+      window.location.href = 'sign.html';
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="keywords" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="stylesheet"
+      media="screen and (max-width: 768px)"
+      href="css/mobile.css"
+    />
+    <title>Sukhinho jiu jitsu</title>
+  </head>
+  <body>
+    <header>
+      <nav id="navbar">
+        <div class="container">
+          <h1 class="logo">
+            <a href="index1.html">Sukinho</a>
+          </h1>
+          <ul>
+            <li><a href="dashboard.html" class="current">Dashboard</a></li>
+            <li><a href="lesson.html">Lesson</a></li>
+            <li><a href="action1.html">In Action Photos</a></li>
+            <li><a href="award1.html">Awards</a></li>
+            <li><a href="contact1.html">Contact</a></li>
+            <li><a href="profile.html">My profile</a></li>
+            <!-- Logout link -->
+            <li><a href="#" id="logoutBtn">Logout</a></li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+    <section id="about-info" class="bg-light py-3">
+      <div class="container">
+        <div>
+          <img src="img/action1.jpg" width="1060px" height="700px" />
+        </div>
+      </div>
+    </section>
+  </body>
+  <script>
+    // Logout functionality: clear the token and redirect to sign-in
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('authToken');
+      window.location.href = 'sign.html';
+    });
+  </script>
+</html>

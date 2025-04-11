@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="keywords" />
+    <script
+      src="https://kit.fontawesome.com/8a206a71da.js"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="stylesheet"
+      media="screen and (max-width: 768px)"
+      href="css/mobile.css"
+    />
+    <title>Sukhinho jiu jitsu</title>
+  </head>
+  <body>
+    <header>
+      <nav id="navbar">
+        <div class="container">
+          <h1 class="logo">
+            <a href="index1.html">Sukinho</a>
+          </h1>
+          <ul>
+            <li><a href="dashboard.html" class="current">Dashboard</a></li>
+            <li><a href="lesson.html">Lesson</a></li>
+            <li><a href="action1.html">In Action Photos</a></li>
+            <li><a href="award1.html">Awards</a></li>
+            <li><a href="contact1.html">Contact</a></li>
+            <li><a href="profile.html">My profile</a></li>
+            <!-- Logout link -->
+            <li><a href="#" id="logoutBtn">Logout</a></li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+
+    <section id="contact-form" class="py-3">
+      <div class="container">
+        <h1 class="l-heading">
+          <span class="text-primary">Contact with Sukhinho</span>
+        </h1>
+        <p>Please fill out the fields below to contact Sukhinho</p>
+        <form action="process.php">
+          <div class="form-group">
+            <label for="name">Full name</label>
+            <input type="text" name="name" id="name" />
+          </div>
+          <div class="form-group">
+            <label for="email">E-mail</label>
+            <input type="email" name="email" id="email" />
+          </div>
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea name="message" id="message"></textarea>
+          </div>
+          <button disabled="true" type="submit" class="btn">Send</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="contact-info" class="bg-dark">
+      <div class="container">
+        <a href="https://www.instagram.com/mjjf2007/">
+          <div class="box">
+            <i class="fas fa-hotel fa-3x" style="color: black"></i>
+            <h3>  ACADEMY </h3>
+            <p>MJJF</p>
+          </div>
+        </a>
+        <a href="tel:+97690111742">
+          <div class="box">
+            <i class="fas fa-phone fa-3x" style="color: black"></i>
+            <h3>PHONE NUMBER</h3>
+            <p>+97690111742</p>
+          </div>
+        </a>
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+          integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"
+        />
+
+        <a href="https://www.instagram.com/sukhinhojj__/">
+          <div class="box">
+            <i class="fa fa-instagram fa-3x" style="color: black"> </i>
+            <h3>INSTAGRAM</h3>
+            <p>Sukhinhojj_</p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <div class="clr"></div>
+  </body>
+  <script>
+    // Logout functionality: clear the token and redirect to sign-in
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('authToken');
+      window.location.href = 'sign.html';
+    });
+  </script>
+</html>

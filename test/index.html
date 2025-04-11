@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sukhinho Jiu Jitsu</title>
+
+<!-- Font Awesome -->
+<script src="https://kit.fontawesome.com/8a206a71da.js" crossorigin="anonymous"></script>
+
+<!-- External CSS -->
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" media="screen and (max-width: 768px)" href="css/mobile.css" />
+
+<!-- Google Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Courgette&display=swap" rel="stylesheet" />
+
+<!-- Swiper CSS -->
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+
+<style>
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    background: #000;
+    font-family: 'Courgette', cursive;
+  }
+  #navbar { background: #333; }
+  #navbar a { color: #fff; }
+
+  .instructor {
+    text-align: center;
+    padding: 40px 0;
+    background: #000;
+  }
+  .instructor .sub { font-size: 14px; color: #fff; letter-spacing: 5px; margin-top: -20px; }
+  .instructor .main { font-size: 48px; color: #fff; margin: 0; }
+
+  .course-slider {
+    background: #000;
+    padding: 100px 0;
+    margin-top: -100px; /* Slider moved upward */
+  }
+  .course-slider .swiper-container {
+    max-width: 1500px;
+    height: auto;
+    margin: 0 auto;
+  }
+
+  .course-slider .swiper-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .course-slider .swiper-slide img {
+    width: 320px;
+    height: 320px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  .swiper-pagination { display: none !important; }
+</style>
+</head>
+
+<body>
+<header id="navbar">
+  <div class="container">
+    <h1 class="logo"><a href="index.html">HOME</a></h1>
+    <ul>
+      <li><a href="action.html">Photos</a></li>
+      <li><a href="award.html">DIET</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="sign.html">Sign / Sign Up</a></li>
+    </ul>
+  </div>
+</header>
+
+<section class="instructor">
+  <p class="sub">MEET YOUR INSTRUCTOR:</p>
+  <h2 class="main">Sukhbat "sukinho" Khadbaatar</h2>
+</section>
+
+<section class="course-slider">
+  <div class="swiper-container">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide"><img src="IMG_0110.PNG" alt="Course 1"></div>
+      <div class="swiper-slide"><img src="IMG_0115.PNG" alt="Course 2"></div>
+      <div class="swiper-slide"><img src="IMG_0109.PNG" alt="Course 3"></div>
+      <div class="swiper-slide"><img src="IMG_0111.PNG" alt="Course 4"></div>
+    </div>
+    
+  </div>
+</section>
+
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const swiper = new Swiper('.swiper-container', {
+      loop: true,
+      slidesPerView: 1,
+      autoplay: {
+        delay: 2000,
+        disableOnInteraction: false,
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+    });
+  });
+</script>
+</body>
+</html>
