@@ -6,14 +6,15 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+	"sync"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/websocket"
 	_ "github.com/lib/pq"
 	"golang.org/x/crypto/bcrypt"
 )
 
-// User struct represents a user in the system
 type User struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`
@@ -22,7 +23,17 @@ type User struct {
 
 var db *sql.DB
 
-// Initialize the database connection
+// 🔐 Chat user sockets
+var clients = make(map[*websocket.Conn]bool)
+var broadcast = make(chan string)
+var mutex = &sync.Mutex{}
+
+var upgrader = websocket.Upgrader{
+	CheckOrigin: func(r *http.Request) bool {
+		return true // allow all origins
+	},
+}
+
 func initDB() {
 	var err error
 	dsn := "user=sukhbat password=new_password dbname=user_auth sslmode=disable"
@@ -36,21 +47,18 @@ func initDB() {
 		log.Fatal(err)
 	}
 
-	log.Println("Database connected!")
+	log.Println("✅ Database connected!")
 }
 
-// Helper function to hash passwords
 func hashPassword(password string) (string, error) {
 	hashed, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	return string(hashed), err
 }
 
-// Helper function to compare hashed passwords
 func checkPassword(hashedPassword, password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }
 
-// Handler for user registration
 func registerHandler(w http.ResponseWriter, r *http.Request) {
 	var user User
 	err := json.NewDecoder(r.Body).Decode(&user)
@@ -59,11 +67,9 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Hash the password before storing it
 	hashedPassword, err := hashPassword(user.Password)
 	if err != nil {
 		http.Error(w, "Server error", http.StatusInternalServerError)
-		log.Printf("Error hashing password: %v", err)
 		return
 	}
 
@@ -71,15 +77,13 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 		user.Name, user.Email, hashedPassword)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Printf("Error inserting user: %v", err)
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	log.Printf("User %s registered successfully", user.Email)
+	log.Printf("✅ User %s registered", user.Email)
 }
 
-// Handler for user login
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	var user User
 	err := json.NewDecoder(r.Body).Decode(&user)
@@ -92,32 +96,25 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	err = db.QueryRow("SELECT password FROM users WHERE email = $1", user.Email).Scan(&storedPassword)
 	if err != nil {
 		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
-		log.Printf("Login failed for user %s: %v", user.Email, err)
 		return
 	}
 
-	// Check the password against the stored hashed password
 	err = checkPassword(storedPassword, user.Password)
 	if err != nil {
 		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
-		log.Printf("Password mismatch for user %s", user.Email)
 		return
 	}
 
-	// Return a dummy token (replace with a real token in production)
 	token := "dummy-token"
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"token": token})
-	log.Printf("User %s logged in successfully", user.Email)
+	log.Printf("✅ User %s logged in", user.Email)
 }
 
-// Handler for getting all registered users
 func getUsersHandler(w http.ResponseWriter, r *http.Request) {
 	rows, err := db.Query("SELECT name, email FROM users")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Printf("Error fetching users: %v", err)
 		return
 	}
 	defer rows.Close()
@@ -127,45 +124,86 @@ func getUsersHandler(w http.ResponseWriter, r *http.Request) {
 		var user User
 		if err := rows.Scan(&user.Name, &user.Email); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
-			log.Printf("Error scanning user: %v", err)
 			return
 		}
 		users = append(users, user)
-	}
-
-	if err = rows.Err(); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Printf("Error during rows iteration: %v", err)
-		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(users)
 }
 
-// Handler to serve HTML files (example for sign.html)
 func serveHTML(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, filepath.Join(".", "sign.html"))
+}
+
+// ✅ WebSocket handler
+func handleWebSocket(w http.ResponseWriter, r *http.Request) {
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Printf("❌ WebSocket upgrade failed: %v", err)
+		return
+	}
+
+	mutex.Lock()
+	clients[conn] = true
+	mutex.Unlock()
+
+	defer func() {
+		mutex.Lock()
+		delete(clients, conn)
+		mutex.Unlock()
+		conn.Close()
+	}()
+
+	for {
+		_, msg, err := conn.ReadMessage()
+		if err != nil {
+			log.Printf("⚠️ Read error: %v", err)
+			break
+		}
+		broadcast <- string(msg)
+	}
+}
+
+// ✅ Broadcast loop
+func handleMessages() {
+	for {
+		msg := <-broadcast
+		mutex.Lock()
+		for client := range clients {
+			err := client.WriteMessage(websocket.TextMessage, []byte(msg))
+			if err != nil {
+				client.Close()
+				delete(clients, client)
+			}
+		}
+		mutex.Unlock()
+	}
 }
 
 func main() {
 	initDB()
 	defer db.Close()
 
+	go handleMessages()
+
 	r := mux.NewRouter()
 
-	// Enable CORS for all origins (adjust as needed for production)
 	headersOk := handlers.AllowedHeaders([]string{"Content-Type"})
 	methodsOk := handlers.AllowedMethods([]string{"GET", "POST", "OPTIONS"})
 	originsOk := handlers.AllowedOrigins([]string{"*"})
+
 	r.Use(handlers.CORS(originsOk, headersOk, methodsOk))
 
-	// Allow OPTIONS for both endpoints to handle preflight
 	r.HandleFunc("/api/register", registerHandler).Methods("POST", "OPTIONS")
 	r.HandleFunc("/api/login", loginHandler).Methods("POST", "OPTIONS")
 	r.HandleFunc("/api/users", getUsersHandler).Methods("GET")
 	r.HandleFunc("/sign", serveHTML).Methods("GET")
 
-	log.Println("Server started on :8080")
+	// ✅ WebSocket route
+	r.HandleFunc("/ws", handleWebSocket)
+
+	log.Println("🚀 Server running at :8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
 }

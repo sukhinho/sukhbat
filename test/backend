@@ -1,0 +1,11 @@
+/backend
+  ├── prisma/           # Prisma schema + миграци
+  ├── src/
+  │   ├── controllers/  # API handler-үүд
+  │   ├── routes/       # Express route-ууд
+  │   ├── middleware/   # Auth middleware
+  │   ├── utils/        # AES encryption
+  │   └── server.ts     # Express сервер + Socket.io
+  ├── .env
+  ├── package.json
+  └── tsconfig.json

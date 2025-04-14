@@ -5,16 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <meta name="keywords" content="Sukhinho Jiu Jitsu, Dashboard" />
+  <title>Sukhinho Jiu Jitsu Dashboard</title>
+
   <script src="https://kit.fontawesome.com/8a206a71da.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" media="screen and (max-width: 768px)" href="css/mobile.css" />
-  <title>Sukhinho Jiu Jitsu Dashboard</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Courgette&display=swap" rel="stylesheet" />
+
   <style>
-    /* Ensure BOTH html and body are black with zero margins, 
-       and body is at least full viewport height. */
     html, body {
       margin: 0;
       padding: 0;
@@ -24,51 +22,87 @@
       font-family: Arial, sans-serif;
     }
 
-    /* Make sure we allow scrolling if content exceeds the viewport */
-    body {
-      min-height: 100vh; 
-      /* remove overflow: hidden; so you can see all content */
-      overflow: hidden;
-    }
-
-    /* Header: dark grey background, white text */
     header {
       background-color: #333;
       color: white;
       padding: 10px 0;
     }
 
-    /* Footer: black background, white text */
-    footer {
-      background-color: black;
-      color: white;
-      padding: 10px 0;
-    }
-
-    /* Container styling to keep content centered */
     .container {
       max-width: 1200px;
       margin: 0 auto;
       padding: 0 20px;
     }
 
-    /* Link styling */
     a {
-      color: #ffa500; /* contrasting orange for links */
+      color: #ffa500;
       text-decoration: none;
     }
-    
+
     a:hover {
       text-decoration: underline;
     }
 
-    /* Hide or show forms if needed */
-    .form-container {
-      display: none;
-      margin: 20px;
+    main {
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
     }
-    .form-container.active {
-      display: block;
+
+    #chat-container {
+      width: 300px;
+      height: 400px;
+      background-color: #222;
+      border: 1px solid #555;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #messages {
+      flex: 1;
+      overflow-y: auto;
+      border-bottom: 1px solid #555;
+      padding: 10px;
+      background-color: #111;
+    }
+
+    #messages div {
+      background-color: #333;
+      color: #fff;
+      padding: 6px 10px;
+      margin-bottom: 8px;
+      border-radius: 4px;
+      word-break: break-word;
+    }
+
+    #chat-input input {
+  flex: 1;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #888;
+  background-color: #111;
+  color: white;
+}
+
+#chat-input input::placeholder {
+  color: #bbb;
+}
+
+    #chat-input input::placeholder {
+      color: #999;
+    }
+
+    #chat-input button {
+      background-color: #ffa500;
+      border: none;
+      padding: 8px 14px;
+      color: black;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    #chat-input button:hover {
+      background-color: #ffb733;
     }
   </style>
 </head>
@@ -76,9 +110,7 @@
   <header>
     <nav id="navbar">
       <div class="container">
-        <h1 class="logo">
-          <a href="index1.html">Sukhbat</a>
-        </h1>
+        <h1 class="logo"><a href="index1.html">Sukhbat</a></h1>
         <ul>
           <li><a href="dashboard.html" class="current">Dashboard</a></li>
           <li><a href="lesson.html">Lesson</a></li>
@@ -86,7 +118,6 @@
           <li><a href="award1.html">Awards</a></li>
           <li><a href="contact1.html">Contact</a></li>
           <li><a href="profile.html">My profile</a></li>
-          <!-- Logout link -->
           <li><a href="#" id="logoutBtn">Logout</a></li>
         </ul>
       </div>
@@ -94,22 +125,65 @@
   </header>
 
   <main>
-    <section id="dashboard" class="py-3">
-      <div class="container">
-        <h2>Hello!</h2>
-        <p>WELCOME TO MY WEBSITE. I will create more contents of my Jiu Jitsu highlights <3.</p>
-        <img src="img1/t2.jpg" style="width: 300px; height: auto;" alt="Jiu Jitsu Highlight">
-        <!-- Additional dashboard content can be added here -->
+    <div>
+      <h2>Hello!</h2>
+      <p>WELCOME TO MY WEBSITE. I will create more contents of my Jiu Jitsu highlights <3.</p>
+      <img src="img1/t2.jpg" style="width: 300px; height: auto;" alt="Jiu Jitsu Highlight">
+    </div>
+
+    <div id="chat-container">
+      <div id="messages"></div>
+      <div id="chat-input">
+        <input type="text" id="messageInput" placeholder="Type a message..." />
+        <button onclick="sendMessage()">Send</button>
       </div>
-    </section>
+    </div>
   </main>
 
   <script>
-    // Logout functionality: clear the auth token and redirect to the sign-in page.
     document.getElementById('logoutBtn').addEventListener('click', () => {
       localStorage.removeItem('authToken');
       window.location.href = 'sign.html';
     });
+
+    let socket;
+
+    function setupWebSocket() {
+      socket = new WebSocket('ws://localhost:8080/ws');
+      const messagesDiv = document.getElementById('messages');
+      const input = document.getElementById('messageInput');
+
+      socket.onopen = () => {
+        console.log("✅ WebSocket connected");
+      };
+
+      socket.onmessage = (event) => {
+        const msg = document.createElement('div');
+        msg.textContent = event.data;
+        messagesDiv.appendChild(msg);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      };
+
+      socket.onclose = () => {
+        console.warn("⚠️ WebSocket closed — retrying in 3s...");
+        setTimeout(setupWebSocket, 3000);
+      };
+
+      socket.onerror = (err) => {
+        console.error("❌ WebSocket error:", err);
+        socket.close();
+      };
+
+      window.sendMessage = () => {
+        const text = input.value.trim();
+        if (text && socket.readyState === WebSocket.OPEN) {
+          socket.send(text);
+          input.value = '';
+        }
+      };
+    }
+
+    setupWebSocket();
   </script>
 </body>
 </html>
